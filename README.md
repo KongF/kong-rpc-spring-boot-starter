@@ -35,7 +35,7 @@ Remote Procedure Call（RPC）：远程过程调用。
 > 5、Server stub解组消息为参数；
 > 6、Server stub再调用服务端的过程，过程执行结果以反方向的相同步骤响应给客户端。
 
-![](C:\Users\10751\AppData\Roaming\marktext\images\2022-08-28-20-16-42-image.png)
+![请添加图片描述](https://img-blog.csdnimg.cn/b6cca68b5e2c4701bd15c5f703fc04fc.png)
 
 ### 2.3 RPC要解决两个问题
 
@@ -68,7 +68,7 @@ RPC调用过程中采用的消息协议称为RPC协议
 
 ### 3.2 项目整体结构
 
-![](C:\Users\10751\AppData\Roaming\marktext\images\2022-08-28-20-19-35-image.png)
+![请添加图片描述](https://img-blog.csdnimg.cn/57127da52898419a90e06e625d04c99d.png)
 
 client：客户端实现服务发现，服务代理调用远程服务
 
