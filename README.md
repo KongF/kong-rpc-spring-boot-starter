@@ -658,7 +658,7 @@ mvn clean install
 
 ```
 <dependency>
-    <groupId>com.kong</groupId>
+    <groupId>com.kong.rpc</groupId>
     <artifactId>kong-rpc-spring-boot-starter</artifactId>
     <version>1.0.0</version>
 </dependency>
