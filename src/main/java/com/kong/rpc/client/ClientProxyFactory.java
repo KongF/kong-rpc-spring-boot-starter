@@ -1,5 +1,6 @@
 package com.kong.rpc.client;
 
+import com.kong.rpc.client.balance.LoadBalance;
 import com.kong.rpc.client.discovery.ServiceDiscoverer;
 import com.kong.rpc.client.net.NetClient;
 import com.kong.rpc.common.protocol.MessageProtocol;
@@ -17,6 +18,10 @@ import java.util.Random;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 
+/**
+ * 客户端代理工厂，创建远程服务代理
+ * @author k
+ */
 public class ClientProxyFactory {
     private ServiceDiscoverer serviceDiscoverer;
 
@@ -25,6 +30,8 @@ public class ClientProxyFactory {
     private NetClient netClient;
 
     private Map<Class<?>,Object> objectCache = new HashMap<>();
+
+    private LoadBalance loadBalance;
 
     /**
      * 通过java动态代理获取服务代理类
@@ -107,5 +114,13 @@ public class ClientProxyFactory {
             }
             return rsp.getReturnValue();
         }
+    }
+
+    public LoadBalance getLoadBalance() {
+        return loadBalance;
+    }
+
+    public void setLoadBalance(LoadBalance loadBalance) {
+        this.loadBalance = loadBalance;
     }
 }

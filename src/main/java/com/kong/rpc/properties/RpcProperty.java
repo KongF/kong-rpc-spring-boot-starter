@@ -25,6 +25,11 @@ public class RpcProperty {
      */
     private String protocol = "leisure";
 
+    /**
+     * 负载均衡算法
+     */
+    private String loadBalance = "random";
+
     public String getRegisterAddress() {
         return registerAddress;
     }
@@ -47,5 +52,13 @@ public class RpcProperty {
 
     public void setProtocol(String protocol) {
         this.protocol = protocol;
+    }
+
+    public String getLoadBalance() {
+        return loadBalance;
+    }
+
+    public void setLoadBalance(String loadBalance) {
+        this.loadBalance = loadBalance;
     }
 }
