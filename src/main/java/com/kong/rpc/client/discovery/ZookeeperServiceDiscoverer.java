@@ -37,4 +37,12 @@ public class ZookeeperServiceDiscoverer implements ServiceDiscoverer {
             return JSON.parseObject(deCh,Service.class);
         }).collect(Collectors.toList());
     }
+
+    public ZkClient getZkClient() {
+        return zkClient;
+    }
+
+    public void setZkClient(ZkClient zkClient) {
+        this.zkClient = zkClient;
+    }
 }

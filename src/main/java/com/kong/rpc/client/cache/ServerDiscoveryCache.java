@@ -1,5 +1,6 @@
 package com.kong.rpc.client.cache;
 
+import com.alibaba.fastjson.JSONArray;
 import com.kong.rpc.common.service.Service;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class ServerDiscoveryCache {
    /**
     * 客户端注入的远程服务service class
     */
-    private static final List<String> SERVER_CLASS_NAMES = new ArrayList<>();
+    public static final List<String> SERVICE_CLASS_NAMES = new ArrayList<>();
 
     public static void put(String serviceName,List<Service> serviceList){
         SERVER_MAP.put(serviceName,serviceList);

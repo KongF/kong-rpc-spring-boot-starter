@@ -3,7 +3,14 @@ package com.kong.rpc.server.register;
 import com.kong.rpc.annotation.InjectService;
 import com.kong.rpc.annotation.Service;
 import com.kong.rpc.client.ClientProxyFactory;
+import com.kong.rpc.client.cache.ServerDiscoveryCache;
+import com.kong.rpc.client.discovery.ZookeeperServiceDiscoverer;
+import com.kong.rpc.common.constants.RpcConstant;
 import com.kong.rpc.server.RpcServer;
+import com.kong.rpc.server.register.zkhelper.ZkChildListenerImpl;
+import org.I0Itec.zkclient.ZkClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -21,6 +28,7 @@ import java.util.Objects;
  */
 public class DefaultRpcProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
+    private static Logger logger = LoggerFactory.getLogger(DefaultRpcProcessor.class);
     @Resource
     private ClientProxyFactory clientProxyFactory;
 
@@ -57,7 +65,19 @@ public class DefaultRpcProcessor implements ApplicationListener<ContextRefreshed
                 }catch (IllegalAccessException e){
                     e.printStackTrace();
                 }
+                //添加本地服务缓存
+                ServerDiscoveryCache.SERVICE_CLASS_NAMES.add(fieldClass.getName());
             }
+        }
+        // 注册子节点监听
+        if (clientProxyFactory.getServiceDiscoverer() instanceof ZookeeperServiceDiscoverer) {
+            ZookeeperServiceDiscoverer serviceDiscoverer = (ZookeeperServiceDiscoverer) clientProxyFactory.getServiceDiscoverer();
+            ZkClient zkClient = serviceDiscoverer.getZkClient();
+            ServerDiscoveryCache.SERVICE_CLASS_NAMES.forEach(name -> {
+                String servicePath = RpcConstant.ZK_SERVICE_PATH+RpcConstant.PATH_DELIMITER+name+"/service";
+                zkClient.subscribeChildChanges(servicePath,new ZkChildListenerImpl());
+            });
+            logger.info("subscribe service zk node successfully");
         }
     }
 
