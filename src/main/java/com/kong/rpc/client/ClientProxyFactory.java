@@ -1,6 +1,7 @@
 package com.kong.rpc.client;
 
 import com.kong.rpc.client.balance.LoadBalance;
+import com.kong.rpc.client.cache.ServerDiscoveryCache;
 import com.kong.rpc.client.discovery.ServiceDiscoverer;
 import com.kong.rpc.client.net.NetClient;
 import com.kong.rpc.common.protocol.MessageProtocol;
@@ -24,6 +25,7 @@ import static java.lang.reflect.Proxy.newProxyInstance;
  */
 public class ClientProxyFactory {
     private ServiceDiscoverer serviceDiscoverer;
+
 
     private Map<String, MessageProtocol> supportMessageProtocols;
 
@@ -116,6 +118,21 @@ public class ClientProxyFactory {
         }
     }
 
+    private List<Service> getServiceList(String serviceName) throws RpcException {
+        List<Service> services;
+        synchronized (serviceName) {
+            if(ServerDiscoveryCache.isEmpty(serviceName)){
+                services = serviceDiscoverer.getServices(serviceName);
+                if(services == null || services.size()<=0){
+                    throw new RpcException("No provider available!");
+                }
+                ServerDiscoveryCache.put(serviceName,services);
+            }else {
+                services = ServerDiscoveryCache.get(serviceName);
+            }
+        }
+        return services;
+    }
     public LoadBalance getLoadBalance() {
         return loadBalance;
     }
