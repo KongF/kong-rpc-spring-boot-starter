@@ -11,5 +11,9 @@ public class RpcConstant {
      * 分隔符
      */
     public static final String PATH_DELIMITER = "/";
+    /**
+     * 轮询
+     */
+    public static final String BALANCE_ROUND = "round";
 
 }

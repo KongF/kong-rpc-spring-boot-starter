@@ -267,7 +267,6 @@ public class SendHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 }
-
 ```
 
 3、服务代理
@@ -388,7 +387,6 @@ public class ClientProxyFactory {
         }
     }
 }
-
 ```
 
 4、消息协议
@@ -458,8 +456,6 @@ public class ZookeeperExportServiceRegister extends DefaultServiceRegister imple
         zkClient.createEphemeral(uriPath);
     }
 }
-
-
 ```
 
 2、网络服务
@@ -542,14 +538,10 @@ public class NettyRpcServer extends RpcServer {
         }
     }
 }
-
-
 ```
 
 3、RPC处理
 
-> 
-> 
 > 这里引入一个**RPC处理者**的概念，负责开启服务，以及注入服务。
 
 ```java
@@ -633,8 +625,6 @@ public class DefaultRpcProcessor implements ApplicationListener<ContextRefreshed
         }
     }
 }
-
-
 ```
 
 ### 3.5 注解
