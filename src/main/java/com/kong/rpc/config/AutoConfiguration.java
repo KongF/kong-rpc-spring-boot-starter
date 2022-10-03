@@ -1,6 +1,7 @@
 package com.kong.rpc.config;
 
 import com.kong.rpc.annotation.LoadBalanceAno;
+import com.kong.rpc.annotation.MessageProtocolAno;
 import com.kong.rpc.client.ClientProxyFactory;
 import com.kong.rpc.client.balance.LoadBalance;
 import com.kong.rpc.client.discovery.ZookeeperServiceDiscoverer;
@@ -43,8 +44,7 @@ public class AutoConfiguration {
         clientProxyFactory.setSid(new ZookeeperServiceDiscoverer(rpcProperty.getRegisterAddress()));
 
         //设置支持协议
-        Map<String, MessageProtocol> supportMessageProtocols = new HashMap<>();
-        supportMessageProtocols.put(rpcProperty.getProtocol(),new JavaSerializeMessageProtocol());
+        Map<String, MessageProtocol> supportMessageProtocols = buildSupportMessageProtoclos();
         clientProxyFactory.setSupportMessageProtocols(supportMessageProtocols);
         //设置负载均衡算法
         LoadBalance loadBalance = getLoadBalance(rpcProperty.getLoadBalance());
@@ -53,6 +53,20 @@ public class AutoConfiguration {
         clientProxyFactory.setNetClient(new NettyNetClient());
         return clientProxyFactory;
     }
+
+    private Map<String, MessageProtocol> buildSupportMessageProtoclos() {
+        Map<String,MessageProtocol> supportMessageProtocols = new HashMap<>();
+        ServiceLoader<MessageProtocol> loader = ServiceLoader.load(MessageProtocol.class);
+        Iterator<MessageProtocol> iterator = loader.iterator();
+        while (iterator.hasNext()) {
+            MessageProtocol messageProtocol = iterator.next();
+            MessageProtocolAno ano = messageProtocol.getClass().getAnnotation(MessageProtocolAno.class);
+            Assert.notNull(ano,"message protocol name can not be empty!");
+            supportMessageProtocols.put(ano.value(),messageProtocol);
+        }
+        return supportMessageProtocols;
+    }
+
     @Bean
     public ServiceRegister serviceRegister(@Autowired RpcProperty rpcProperty) {
         return new ZookeeperExportServiceRegister(rpcProperty.getRegisterAddress(),rpcProperty.getServerPort(),rpcProperty.getProtocol());

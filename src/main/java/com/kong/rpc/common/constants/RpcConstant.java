@@ -22,5 +22,16 @@ public class RpcConstant {
      * 随机
      */
     public static final String BALANCE_RANDOM = "random";
-
+    /**
+     * java序列化协议
+     */
+    public static final String PROTOCOL_JAVA = "java";
+    /**
+     * protobuf序列化协议
+     */
+    public static final String PROTOCOL_PROTOBUF = "protobuf";
+    /**
+     * kryo序列化协议
+     */
+    public static final String PROTOCOL_KRYO = "kryo";
 }

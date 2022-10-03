@@ -1,0 +1,2 @@
+com.kong.rpc.common.protocol.JavaSerializeMessageProtocol
+com.kong.rpc.common.protocol.KryoMessageProtocol

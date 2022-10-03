@@ -1,10 +1,14 @@
 package com.kong.rpc.common.protocol;
 
+import com.kong.rpc.annotation.MessageProtocolAno;
+import com.kong.rpc.common.constants.RpcConstant;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+@MessageProtocolAno(RpcConstant.PROTOCOL_JAVA)
 public class JavaSerializeMessageProtocol implements MessageProtocol{
 
     private byte[] serialize(Object o) throws Exception{
