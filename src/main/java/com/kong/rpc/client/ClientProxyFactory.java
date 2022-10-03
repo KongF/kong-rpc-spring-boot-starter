@@ -12,10 +12,7 @@ import com.kong.rpc.execption.RpcException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import static java.lang.reflect.Proxy.newProxyInstance;
 
@@ -88,28 +85,33 @@ public class ClientProxyFactory {
 
             //1、获得服务信息
             String serviceName = this.clazz.getName();
-            List<Service> services = serviceDiscoverer.getServices(serviceName);
+            List<Service> services = getServiceList(serviceName);
 
             if(services == null || services.isEmpty()){
                 throw new RpcException("No provider available!");
             }
             // 随机选择一个服务提供者(软负载)
-            Service service = services.get(random.nextInt(services.size()));
+            Service service = loadBalance.chooseOne(services);
 
             //2、构造request对象
             RpcRequest req = new RpcRequest();
+            //TODO snowerflower
+            req.setRequestId(UUID.randomUUID().toString());
             req.setServiceName(service.getName());
             req.setMethod(method.getName());
             req.setParameterTypes(method.getParameterTypes());
             req.setParameters(args);
             //3、协议层编组
             MessageProtocol protocol = supportMessageProtocols.get(service.getProtocol());
-            byte[] data = protocol.marshallingRequest(req);
-//            4、调用网络层发送请求
-            byte[] repData = netClient.sendRequest(data,service);
-            //5、解组响应信息
-            RpcResponse rsp = protocol.unmarshallingResponse(repData);
-
+            RpcResponse rsp = netClient.sendRequest(req,service,protocol);
+//            byte[] data = protocol.marshallingRequest(req);
+////            4、调用网络层发送请求
+//            byte[] repData = netClient.sendRequest(data,service);
+//            //5、解组响应信息
+//            RpcResponse rsp = protocol.unmarshallingResponse(repData);
+            if (rsp == null) {
+                throw new RpcException("the response is null");
+            }
             //6、结果处理
             if (rsp.getException() != null){
                 throw rsp.getException();
