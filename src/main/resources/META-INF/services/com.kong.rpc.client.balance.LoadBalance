@@ -1,1 +1,3 @@
 com.kong.rpc.client.balance.FullRoundBalance
+com.kong.rpc.client.balance.RandomBalance
+com.kong.rpc.client.balance.WeightRoundBalance

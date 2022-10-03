@@ -20,6 +20,11 @@ public class Service {
      */
     private String address;
 
+    /**
+     * 权重
+     */
+    private Integer weight;
+
     public String getName() {
         return name;
     }
@@ -42,5 +47,13 @@ public class Service {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 }
