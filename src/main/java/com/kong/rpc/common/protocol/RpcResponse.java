@@ -11,6 +11,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class RpcResponse implements Serializable {
+    private String requestId;
     private RpcStatus status;
 
     private Map<String,String> headers = new HashMap<>();
@@ -53,5 +54,13 @@ public class RpcResponse implements Serializable {
 
     public void setException(Exception exception) {
         this.exception = exception;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

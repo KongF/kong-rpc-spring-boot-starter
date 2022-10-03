@@ -14,6 +14,7 @@ public class RpcRequest implements Serializable {
 
     private static final long serialVersionUID = -8254267953263638110L;
 
+    private String requestId;
     private String serviceName;
 
     private String method;
@@ -62,5 +63,13 @@ public class RpcRequest implements Serializable {
 
     public void setParameters(Object[] parameters) {
         this.parameters = parameters;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }

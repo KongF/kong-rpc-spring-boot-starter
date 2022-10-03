@@ -11,7 +11,7 @@
     </parent>
     <groupId>com.kong.rpc</groupId>
     <artifactId>kong-rpc-spring-boot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>kong-rpc-spring-boot-starter</name>
     <description>RPC project for Spring Boot</description>
@@ -58,6 +58,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>2.0.0-alpha1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.0.1-android</version>
         </dependency>
     </dependencies>
 
