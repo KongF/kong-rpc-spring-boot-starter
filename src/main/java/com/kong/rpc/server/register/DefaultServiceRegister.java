@@ -14,7 +14,7 @@ public class DefaultServiceRegister implements ServiceRegister {
 
     protected String protocol;
     protected Integer port;
-
+    protected Integer weight;
     @Override
     public void register(ServiceObject so) throws Exception {
         if (so == null) {

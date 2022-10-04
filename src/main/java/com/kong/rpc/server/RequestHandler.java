@@ -5,8 +5,10 @@ import com.kong.rpc.common.protocol.MessageProtocol;
 import com.kong.rpc.common.protocol.RpcRequest;
 import com.kong.rpc.common.protocol.RpcResponse;
 import com.kong.rpc.common.protocol.RpcStatus;
+import com.kong.rpc.properties.RpcProperty;
 import com.kong.rpc.server.register.ServiceObject;
 import com.kong.rpc.server.register.ServiceRegister;
+import org.springframework.context.annotation.Bean;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,6 +52,7 @@ public class RequestHandler {
                 rsp.setException(exception);
             }
         }
+        rsp.setRequestId(req.getRequestId());
         return this.protocol.marshallingResponse(rsp);
     }
 

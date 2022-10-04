@@ -38,6 +38,12 @@ public class DefaultRpcProcessor implements ApplicationListener<ContextRefreshed
     @Resource
     private RpcServer rpcServer;
 
+    public DefaultRpcProcessor(ClientProxyFactory clientProxyFactory, ServiceRegister serviceRegister, RpcServer rpcServer) {
+        this.clientProxyFactory = clientProxyFactory;
+        this.serviceRegister = serviceRegister;
+        this.rpcServer = rpcServer;
+    }
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         if (Objects.isNull(event.getApplicationContext().getParent())){

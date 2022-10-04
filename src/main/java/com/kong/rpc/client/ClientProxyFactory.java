@@ -9,6 +9,8 @@ import com.kong.rpc.common.protocol.RpcRequest;
 import com.kong.rpc.common.protocol.RpcResponse;
 import com.kong.rpc.common.service.Service;
 import com.kong.rpc.execption.RpcException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

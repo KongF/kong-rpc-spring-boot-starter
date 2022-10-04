@@ -23,12 +23,14 @@ public class RpcProperty {
     /**
      * 服务协议
      */
-    private String protocol = "leisure";
+    private String protocol = "java";
 
     /**
      * 负载均衡算法
      */
     private String loadBalance = "random";
+
+    private Integer weight;
 
     public String getRegisterAddress() {
         return registerAddress;
@@ -60,5 +62,13 @@ public class RpcProperty {
 
     public void setLoadBalance(String loadBalance) {
         this.loadBalance = loadBalance;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 }

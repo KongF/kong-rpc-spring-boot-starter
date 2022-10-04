@@ -1,5 +1,6 @@
 package com.kong.rpc.server;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -9,8 +10,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Netty RPC 服务端，提供Nett网络服务开启、关闭
@@ -21,6 +28,10 @@ public class NettyRpcServer extends RpcServer {
     private static Logger logger = LoggerFactory.getLogger(NettyRpcServer.class);
     private Channel channel;
 
+    private static final ExecutorService pool = new ThreadPoolExecutor(4,8,200,
+            TimeUnit.SECONDS,
+            new LinkedBlockingDeque<>(1000),
+            new ThreadFactoryBuilder().setNameFormat("rpcServer=%d").build());
     public NettyRpcServer(int port, String protocol, RequestHandler handler) {
         super(port, protocol, handler);
     }
@@ -32,7 +43,9 @@ public class NettyRpcServer extends RpcServer {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try{
             ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup,workerGroup).channel(NioServerSocketChannel.class).option(ChannelOption.SO_BACKLOG,100)
+            b.group(bossGroup,workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG,100)
                     .handler(new LoggingHandler(LogLevel.INFO)).childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                 public void initChannel(SocketChannel ch){
@@ -64,7 +77,7 @@ public class NettyRpcServer extends RpcServer {
         }
         @Override
         public void channelRead(ChannelHandlerContext ctx,Object msg) throws Exception {
-            logger.info("The server receives a message : {}",msg);
+            /*logger.info("The server receives a message : {}",msg);
             ByteBuf msgBuf = (ByteBuf) msg;
             byte[] req = new byte[msgBuf.readableBytes()];
             msgBuf.readBytes(req);
@@ -72,7 +85,24 @@ public class NettyRpcServer extends RpcServer {
             logger.info("Send response: {}",msg);
             ByteBuf respBuf = Unpooled.buffer(res.length);
             respBuf.writeBytes(res);
-            ctx.write(respBuf);
+            ctx.write(respBuf);*/
+            pool.submit(()->{
+                try{
+                    logger.debug("the server receives message : {}",msg);
+                    ByteBuf byteBuf = (ByteBuf) msg;
+                    byte[] reqData = new byte[byteBuf.readableBytes()];
+                    byteBuf.readBytes(reqData);
+                    //手动回收
+                    ReferenceCountUtil.release(byteBuf);
+                    byte[] respData = handler.handleRequest(reqData);
+                    ByteBuf respBuf = Unpooled.buffer(respData.length);
+                    respBuf.writeBytes(respData);
+                    logger.debug("Send response:{}",respBuf);
+                    ctx.writeAndFlush(respBuf);
+                }catch (Exception e){
+                    logger.error("server read exception",e);
+                }
+            });
         }
         @Override
         public void channelReadComplete(ChannelHandlerContext ctx) {

@@ -63,6 +63,7 @@ public class SendHandlerV2 extends ChannelInboundHandlerAdapter {
         byteBuf.readBytes(resp);
         ReferenceCountUtil.release(byteBuf);
         RpcResponse response = messageProtocol.unmarshallingResponse(resp);
+
         RpcFuture<RpcResponse> future = requestMap.get(response.getRequestId());
         future.setResponse(response);
     }

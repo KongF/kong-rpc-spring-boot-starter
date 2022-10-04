@@ -18,11 +18,12 @@ import static com.kong.rpc.common.constants.RpcConstant.*;
  */
 public class ZookeeperExportServiceRegister extends DefaultServiceRegister implements ServiceRegister {
     private ZkClient zkClient;
-    public ZookeeperExportServiceRegister(String zkAddress,Integer port,String protocol){
+    public ZookeeperExportServiceRegister(String zkAddress,Integer port,String protocol,Integer weight){
         zkClient = new ZkClient(zkAddress);
         zkClient.setZkSerializer(new ZookeeperSerializer());
         this.port = port;
         this.protocol = protocol;
+        this.weight = weight;
     }
     @Override
     public void register(ServiceObject so) throws Exception {

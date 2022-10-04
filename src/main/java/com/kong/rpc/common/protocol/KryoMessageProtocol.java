@@ -1,10 +1,10 @@
 package com.kong.rpc.common.protocol;
 
+import com.kong.rpc.annotation.MessageProtocolAno;
+import com.kong.rpc.common.constants.RpcConstant;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.kong.rpc.annotation.MessageProtocolAno;
-import com.kong.rpc.common.constants.RpcConstant;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
 import java.io.ByteArrayInputStream;
@@ -25,6 +25,7 @@ public class KryoMessageProtocol implements MessageProtocol {
             kryo.setReferences(false);
             kryo.register(RpcRequest.class);
             kryo.register(RpcResponse.class);
+//            kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());
             Kryo.DefaultInstantiatorStrategy strategy = (Kryo.DefaultInstantiatorStrategy) kryo.getInstantiatorStrategy();
             strategy.setFallbackInstantiatorStrategy(new StdInstantiatorStrategy());
             return kryo;

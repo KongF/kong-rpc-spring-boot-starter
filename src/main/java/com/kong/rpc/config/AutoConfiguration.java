@@ -6,7 +6,6 @@ import com.kong.rpc.client.ClientProxyFactory;
 import com.kong.rpc.client.balance.LoadBalance;
 import com.kong.rpc.client.discovery.ZookeeperServiceDiscoverer;
 import com.kong.rpc.client.net.NettyNetClient;
-import com.kong.rpc.common.protocol.JavaSerializeMessageProtocol;
 import com.kong.rpc.common.protocol.MessageProtocol;
 import com.kong.rpc.execption.RpcException;
 import com.kong.rpc.properties.RpcProperty;
@@ -32,9 +31,20 @@ import java.util.ServiceLoader;
  */
 @Configuration
 public class AutoConfiguration {
+
     @Bean
-    public DefaultRpcProcessor defaultRpcProcessor() {
-        return new DefaultRpcProcessor();
+    public DefaultRpcProcessor defaultRpcProcessor(@Autowired ClientProxyFactory clientProxyFactory,
+                                                   @Autowired ServiceRegister serviceRegister,
+                                                   @Autowired RpcServer rpcServer) {
+        return new DefaultRpcProcessor(clientProxyFactory,serviceRegister,rpcServer);
+    }
+    @Bean
+    public ServiceRegister serverRegister(@Autowired RpcProperty rpcConfig) {
+        return new ZookeeperExportServiceRegister(
+                rpcConfig.getRegisterAddress(),
+                rpcConfig.getServerPort(),
+                rpcConfig.getProtocol(),
+                rpcConfig.getWeight());
     }
     @Bean
     public ClientProxyFactory clientProxyFactory(@Autowired RpcProperty rpcProperty) throws RpcException {
@@ -69,11 +79,11 @@ public class AutoConfiguration {
 
     @Bean
     public ServiceRegister serviceRegister(@Autowired RpcProperty rpcProperty) {
-        return new ZookeeperExportServiceRegister(rpcProperty.getRegisterAddress(),rpcProperty.getServerPort(),rpcProperty.getProtocol());
+        return new ZookeeperExportServiceRegister(rpcProperty.getRegisterAddress(),rpcProperty.getServerPort(),rpcProperty.getProtocol(),rpcProperty.getWeight());
     }
     @Bean
-    public RequestHandler requestHandler(@Autowired ServiceRegister serviceRegister) {
-        return new RequestHandler(new JavaSerializeMessageProtocol(), serviceRegister);
+    public RequestHandler requestHandler(@Autowired ServiceRegister serviceRegister,@Autowired RpcProperty rpcProperty) throws RpcException {
+        return new RequestHandler(getMessageProtocol(rpcProperty.getProtocol()), serviceRegister);
     }
     @Bean
     public RpcServer rpcServer(@Autowired RequestHandler requestHandler, @Autowired RpcProperty rpcProperty){
@@ -96,5 +106,17 @@ public class AutoConfiguration {
             }
         }
         throw new RpcException("invalid load balance config");
+    }
+    private MessageProtocol getMessageProtocol(String name) throws RpcException {
+        ServiceLoader<MessageProtocol> loader = ServiceLoader.load(MessageProtocol.class);
+        Iterator<MessageProtocol> iterator = loader.iterator();
+        while (iterator.hasNext()){
+            MessageProtocol messageProtocol = iterator.next();
+            MessageProtocolAno ano = messageProtocol.getClass().getAnnotation(MessageProtocolAno.class);
+            if (name.equals(ano.value())){
+                return messageProtocol;
+            }
+        }
+        throw new RpcException("invalid message protocol config!");
     }
 }

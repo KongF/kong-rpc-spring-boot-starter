@@ -68,8 +68,20 @@
         </dependency>
         <dependency>
             <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
+            <artifactId>kryo-shaded</artifactId>
             <version>${kryo.version}</version>
+        </dependency>
+        <!-- protostuff依赖 -->
+        <dependency>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-core</artifactId>
+            <version>${protostuff.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dyuproject.protostuff</groupId>
+            <artifactId>protostuff-runtime</artifactId>
+            <version>${protostuff.version}</version>
         </dependency>
         <dependency>
             <groupId>org.objenesis</groupId>
