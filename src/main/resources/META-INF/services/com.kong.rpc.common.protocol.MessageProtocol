@@ -1,2 +1,3 @@
 com.kong.rpc.common.protocol.JavaSerializeMessageProtocol
 com.kong.rpc.common.protocol.KryoMessageProtocol
+com.kong.rpc.common.protocol.ProtoBufMessageProtocol
