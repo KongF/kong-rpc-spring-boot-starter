@@ -9,8 +9,6 @@ import com.kong.rpc.common.protocol.RpcRequest;
 import com.kong.rpc.common.protocol.RpcResponse;
 import com.kong.rpc.common.service.Service;
 import com.kong.rpc.execption.RpcException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -107,7 +105,7 @@ public class ClientProxyFactory {
             MessageProtocol protocol = supportMessageProtocols.get(service.getProtocol());
             RpcResponse rsp = netClient.sendRequest(req,service,protocol);
 //            byte[] data = protocol.marshallingRequest(req);
-////            4、调用网络层发送请求
+//            //4、调用网络层发送请求
 //            byte[] repData = netClient.sendRequest(data,service);
 //            //5、解组响应信息
 //            RpcResponse rsp = protocol.unmarshallingResponse(repData);
